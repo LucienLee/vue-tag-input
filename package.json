@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/vue-tag-autocomplete.js",
-  "files": ["dist/umd"],
+  "files": [
+    "dist/umd"
+  ],
   "scripts": {
     "start": "poi",
     "build": "poi build --format umd && poi build --component",
@@ -26,7 +28,7 @@
     "jest": "^21.2.1",
     "jest-serializer-vue": "^0.3.0",
     "node-sass": "^4.7.2",
-    "poi": "^9.6.0",
+    "poi": "^9.6.1",
     "poi-preset-eslint": "^9.0.1",
     "poi-preset-transform-test-files": "^9.0.3",
     "sass-loader": "^6.0.6",

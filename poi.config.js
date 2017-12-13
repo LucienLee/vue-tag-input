@@ -4,7 +4,7 @@ const camelToKebab = str => str
   .replace(/(^[A-Z])/, ([first]) => first.toLowerCase())
   .replace(/([A-Z])/g, ([letter]) => `-${letter.toLowerCase()}`);
 
-module.exports = options => {
+module.exports = (options = {}) => {
   const { mode, component } = options;
 
   const basic = {

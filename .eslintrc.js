@@ -1,5 +1,5 @@
 const poi = require('poi');
-const app = poi('./poi.config.js');
+const app = poi();
 const webpackConfig = app.createWebpackConfig();
 
 module.exports = {
@@ -52,7 +52,7 @@ module.exports = {
   },
   settings: {
     'import/resolver': {
-      webpack:{
+      webpack: {
         config: webpackConfig
       }
     }
