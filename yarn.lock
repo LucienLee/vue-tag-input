@@ -5101,9 +5101,9 @@ poi-webpack-node-externals@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/poi-webpack-node-externals/-/poi-webpack-node-externals-2.0.0.tgz#3e23ae0673705f5f44b23ecd194b85c724de91fa"
 
-poi@^9.5.10:
-  version "9.5.10"
-  resolved "https://registry.yarnpkg.com/poi/-/poi-9.5.10.tgz#bd5108a68b2c483dafff3c63df94ab26d3d03d19"
+poi@^9.6.0:
+  version "9.6.0"
+  resolved "https://registry.yarnpkg.com/poi/-/poi-9.6.0.tgz#dd7fc3b9f94a54018ce20d9c2252aaed7c5e3c4c"
   dependencies:
     address "^1.0.1"
     autoprefixer "^7.1.2"

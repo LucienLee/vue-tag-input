@@ -1,3 +1,7 @@
+const poi = require('poi');
+const app = poi('./poi.config.js');
+const webpackConfig = app.createWebpackConfig();
+
 module.exports = {
   root: true,
   parserOptions: {
@@ -49,11 +53,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       webpack:{
-        config: {
-          resolve: {
-            extensions: ['.js', '.vue']
-          }
-        }
+        config: webpackConfig
       }
     }
   }

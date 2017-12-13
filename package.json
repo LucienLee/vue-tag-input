@@ -23,7 +23,7 @@
     "jest": "^21.2.1",
     "jest-serializer-vue": "^0.3.0",
     "node-sass": "^4.7.2",
-    "poi": "^9.5.10",
+    "poi": "^9.6.0",
     "poi-preset-eslint": "^9.0.1",
     "poi-preset-transform-test-files": "^9.0.3",
     "sass-loader": "^6.0.6",
