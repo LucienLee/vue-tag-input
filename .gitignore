@@ -3,6 +3,6 @@ node_modules/
 .vscode/
 npm-debug.log
 coverage
-dist/
+dist/umd
 output_test/
 

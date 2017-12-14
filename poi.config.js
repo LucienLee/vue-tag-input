@@ -8,18 +8,18 @@ module.exports = options => {
   const { mode, component } = options;
 
   const basic = {
-
   };
 
-  if (options.mode === 'development') {
+  if (mode === 'development') {
     return {
       ...basic,
       entry: './index.js',
     };
   }
 
-  if (options.mode === 'test') {
+  if (mode === 'test') {
     return {
+      ...basic,
       presets: [
         require('poi-preset-transform-test-files')(),
       ]
@@ -30,7 +30,7 @@ module.exports = options => {
   return {
     ...basic,
     entry: {
-      [camelToKebab(componentName)]: `./src/${componentName}.vue`
+      [`${component ? '' : 'umd/'}${camelToKebab(componentName)}`]: `./src/${componentName}.vue`
     },
     filename: {
       js: '[name].js',
@@ -40,8 +40,7 @@ module.exports = options => {
       require('poi-preset-eslint')(),
     ],
     html: false,
+    extractCSS: !component,
     moduleName: componentName,
-    extractCSS: !options.component,
-    component: options.component,
   };
 };

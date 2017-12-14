@@ -2,16 +2,19 @@
   "name": "vue-tag-autocomplete",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/vue-tag-autocomplete.js",
+  "files": ["dist/umd"],
   "scripts": {
     "start": "poi",
-    "build": "poi build --format umd || poi build --component",
+    "build": "poi build --format umd && poi build --component",
     "test": "poi test && jest output_test/test.js",
     "test:update": "poi test && jest output_test/test.js -u",
     "lint": "eslint --fix . --ext .vue --ext .js",
-    "lint:check": "eslint . --ext .vue --ext .js"
+    "lint:check": "eslint . --ext .vue --ext .js",
+    "clean": "rm -rf dist"
   },
-  "author": "Lucien Lee",
+  "author": "Lucien Lee <lucien@lucienlee.cc>",
+  "repository": "git@github.com:LucienLee/vue-tag-autocomplete.git",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^8.0.3",
