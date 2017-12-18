@@ -1,15 +1,22 @@
 import Vue from 'vue';
-import VueTagAutocomplete from './src/VueTagAutocomplete';
+import VueTagAutocomplete from '@/VueTagAutocomplete';
+
+import './index.sass';
 
 new Vue({
   el: '#app',
   components: {
     VueTagAutocomplete,
   },
+  data: {
+    tags: [],
+  },
   render() {
     return (
-      <div>
-        <VueTagAutocomplete/>
+      <div class="container">
+        <VueTagAutocomplete
+          v-model={this.tags}
+        />
       </div>
     );
   },
