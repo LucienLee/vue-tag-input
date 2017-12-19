@@ -1,4 +1,6 @@
 <script>
+import playOnce from '@/util/playOnce';
+
 const KEYS = {
   BACKSPACE: 8,
   TAB: 9,
@@ -82,6 +84,11 @@ export default {
       required: false,
       default: '16px',
     },
+    errorAninmatedClass: {
+      type: String,
+      required: false,
+      default: 'error',
+    },
   },
   data() {
     return {
@@ -101,6 +108,9 @@ export default {
           return item;
         }
       });
+    },
+    flatTags() {
+      return this.tags.map(tag => tag.text);
     },
   },
   methods: {
@@ -145,6 +155,11 @@ export default {
       const tag = text.trim();
       if (tag === '' || this.isComposing) return;
 
+      const duplicatedIdx = this.flatTags.indexOf(text);
+      if (!this.allowNew && duplicatedIdx !== -1 ) {
+        return playOnce(this.$el.querySelector(`[name=tag-${duplicatedIdx}]`), this.errorAninmatedClass);
+      }
+
       this.query = '';
       if (this.quickMode) {
         this.$emit(EVENTS.INPUT, [...this.value, tag,]);
@@ -171,7 +186,7 @@ export default {
       >
         {this.tags.map((item, index) =>
           (
-            <div class='tag' key={item.id}>
+            <div class='tag' name={`tag-${index}`} key={item.id}>
               <span class='text'>{item.text}</span>
               <span class='delete'
                 onClick={this.deleteTag.bind(this, index)}
@@ -273,6 +288,21 @@ $color: #909399
 
   &::after
     transform: translateX(-50%) translateY(-50%) rotate(45deg)
+
+@keyframes shake
+  from, to
+    transform: translate3d(0, 0, 0)
+
+  20%, 60%
+    transform: translate3d(-4px, 0, 0)
+
+  40%, 80%
+    transform: translate3d(4px, 0, 0)
+
+.error
+  animation-name: shake
+  animation-fill-mode: both
+  animation-duration: 0.25s
 
 </style>
 

@@ -109,11 +109,19 @@ Array of characters matching keyboard event key values. This is useful when need
 
 #### allowNew - {Boolean}
 Default: `false`  
-Allows users to add new (not suggested) tags.
+Allows users to add new (not suggested) tags. If it's `false`, the duplicated tag would play animation with `errorAninmatedClass`.
 
 #### allowDuplicated - {Boolean}
 Default: `false`  
 Allows users to add duplicated tags.
+
+#### addOnBlur - {Boolean}
+Default: `false`  
+Add tag automatically when input field blur.
+
+#### errorAninmatedClass
+Default: `error` (scoped css)
+The animation class would add on duplicated tag element when `allowNew` is `false`. The default animation is shaking for 0.25s.
 
 ## Events
 
