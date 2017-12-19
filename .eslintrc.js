@@ -45,6 +45,24 @@ module.exports = {
     'arrow-parens': 0,
     // allow async-await
     'generator-star-spacing': 0,
+    // require a space before & after certain keywords
+    'keyword-spacing': ['error', {
+      before: true,
+      after: true,
+      overrides: {
+        return: { after: true },
+        throw: { after: true },
+        case: { after: true }
+      }
+    }],
+    // require or disallow space before function opening parenthesis
+    'space-before-function-paren': ['error', {
+      anonymous: 'always',
+      named: 'never',
+      asyncArrow: 'always'
+    }],
+    // enforce spacing inside array brackets
+    'array-bracket-spacing': ['error', 'never'],
     // trailing comma
     'comma-dangle': [2,'always'],
     // semicolons
