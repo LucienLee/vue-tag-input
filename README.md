@@ -1,5 +1,5 @@
 # Vue Tag Autocomplete
-customizable [Vue](https://vuejs.org) component for inputing tags, which support autocomplete.
+Customizable [Vue](https://vuejs.org) component for inputing tags, which support autocomplete.
 
 ## Getting Started
 
@@ -11,14 +11,15 @@ yarn add vue-tag-autocomplete
 ### Quick Example
 
 ```html
-<VueTagAutocomplete v-model="tags" :quickMode="true"></VueTagAutocomplete>
-```
+<template>
+  <VueTagAutocomplete v-model="tags" :quickMode="true"></VueTagAutocomplete>
+</template>
 
-```js
+<script>
 import VueTagAutocomplete from 'vue-tag-autocomplete'
 
 export default {
-  data () {
+  data() {
     return {
       tags: [
         'Africa',
@@ -30,7 +31,7 @@ export default {
     VueTagAutocomplete
   }
 }
-
+</script>
 ```
 
 ## Usage
@@ -80,7 +81,7 @@ An array of suggestions that are used as basis for showing suggestions. Each tag
 ```
 #### quickMode - {Boolean}
 Default: `false`  
-Allow developers to use `v-model`, rather than handling `add` and `delete` event by yourselves. In quick mode, new tag will append to array as `string`. If you want to control how new tag be added, you could listen `input` event. Otherwise, you should not use `quickMode` and listen `add` event. 
+Allow developers to use `v-model`, rather than handling `add` and `delete` event by yourselves. In quick mode, new tag will append to array as `string`. If you want to control how new tag be added, you could listen [`input`](#input) event. Otherwise, you should listen [`add`](#add) and [`delete`](#delete) event instead. 
 
 ```html
 <VueTagAutocomplete
@@ -90,13 +91,13 @@ Allow developers to use `v-model`, rather than handling `add` and `delete` event
 <!-- Which is equal to -->
 <VueTagAutocomplete
   :quickMode="true"
-  :value="tag"
-  @input="val = { tag = val }"
+  :value="tags"
+  @input="val = { tags = val }"
 />
 ```
 
 #### placeholder - {String}
-Defaults to `Add new tags`  
+Defaults to `'Add new tags'`  
 The placeholder shown for the input. 
 
 #### delimiters - {Array<Integer>}
@@ -109,33 +110,115 @@ Array of characters matching keyboard event key values. This is useful when need
 
 #### allowNew - {Boolean}
 Default: `false`  
-Allows users to add new (not suggested) tags. If it's `false`, the duplicated tag would play animation with `errorAninmatedClass`.
+Allows users to add new (not suggested) tags. 
 
 #### allowDuplicated - {Boolean}
 Default: `false`  
-Allows users to add duplicated tags.
+Allows users to add duplicated tags. If it's `false`, the duplicated tag would play animation with [`errorAninmatedClass`](#errorAninmatedClass---String) to hint the user.
 
 #### addOnBlur - {Boolean}
 Default: `false`  
 Add tag automatically when input field blur.
 
-#### errorAninmatedClass
+#### errorAninmatedClass - {String}
 Default: `error` (scoped css)
 The animation class would add on duplicated tag element when `allowNew` is `false`. The default animation is shaking for 0.25s.
 
 ## Events
 
 #### add
+Params: tag would be added - {String}  
+Emitted when a tag had be added.
+
+```html
+<template>
+  <VueTagAutocomplete :value="tags" @add="onAdd"></VueTagAutocomplete>
+</template>
+
+<script>
+export default {
+  data() {
+    return { tags: [] }
+  },
+  methods: {
+    onAddition(tag) {
+      this.tags.push(tag)
+    }
+  }
+}
+</script>
+```
 
 #### delete
+Params: index of tag would be removed - {Number}  
+Emitted when a tag had be added.
 
-#### inputChange
+```html
+<template>
+  <VueTagAutocomplete :value="tags" @delete="onDelete"></VueTagAutocomplete>
+</template>
+
+<script>
+export default {
+  data() {
+    return { tags: [] }
+  },
+  methods: {
+    onDelete(index) {
+      this.tags.splice(index, 1)
+    }
+  }
+}
+</script>  
+```
 
 #### input
+Params: the array of updated tags - {Array}  
+Emitted when a tag had be added or deteled, which only be available in [`quickMode`](#quickMode---Boolean). The new tag will be appended as string into array. If you need to control new tag in the array, you could modify the last item of array and pass the whole array to `data` in the listener.
 
+```js
+export default {
+  data() {
+    return { tags: [] }
+  },
+  methods: {
+    onInput(newTags) {
+      // newTags will contained the new array of updated tags. 
+      const id = newTags.length - 1
+      const text = newTags.pop()
+      this.tags = [...newTags, {
+        id,
+        text
+      }]
+    }
+  }
+}
+```
+
+#### inputChange
+Parmas: the current input data - {String}  
+Emitted when input field changed. You could query autocomplete data here.
+
+```js
+export default {
+  data() {
+    return { 
+      tags: [],
+      suggestions: []
+    }
+  },
+  methods: {
+    onInputChange(query) {
+      fetch(`https://your.data.source?query=${query}`, (data) => {
+        this.suggestions = data
+      })
+    }
+  }
+}
+```
 
 ## Development
 
 ## Author
-
+Lucien Lee
 
