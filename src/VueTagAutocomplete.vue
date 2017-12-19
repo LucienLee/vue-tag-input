@@ -128,7 +128,7 @@ export default {
     handleKeydown(e) {
       this.isComposing = e.isComposing;
 
-      if (e.keyCode === KEYS.BACKSPACE && this.query === '') {
+      if (e.keyCode === KEYS.BACKSPACE && this.$refs.input.selectionStart === 0) {
         this.deleteTag(this.value.length - 1);
       }
 
