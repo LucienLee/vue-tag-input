@@ -62,7 +62,8 @@ An array of tag objects. Each tag need an `id` and a `text` property which is us
 ```
 
 #### suggestions - {Array<Object|String>}
-An array of suggestions that are used as basis for showing suggestions. Each tag need an `id` and a `text` property which is used to display. Otherwise, you could just use array of strings directly. This component would generate id by index and string automatically. 
+Default: `[]`  
+An array of suggestions that are used as basis for showing autocomplete. Each tag need an `id` and a `text` property which is used to display. Otherwise, you could just use array of strings directly. This component would generate id by index and string automatically. 
 
 ```js
 // Recommended: Pass Object 
@@ -108,9 +109,9 @@ Array of integers matching keyboard event `keyCode` values. When a corresponding
 Default: [',']  
 Array of characters matching keyboard event key values. This is useful when needing to support a specific character irrespective of the keyboard layout. Note, that this list is separate from the one specified by the delimiters option, so you'll need to set the value there to [], if you wish to disable those keys. 
 
-#### allowNew - {Boolean}
+#### onlyFromSuggestions - {Boolean}
 Default: `false`  
-Allows users to add new (not suggested) tags. 
+If set to `true`, it will be possible to add new items only from the autocomplete dropdown.
 
 #### allowDuplicated - {Boolean}
 Default: `false`  

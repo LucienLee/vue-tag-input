@@ -10,6 +10,7 @@ new Vue({
   },
   data: {
     tags: ['SSS', 'AAA','SSS', 'AqweqweqweqAA','SSS', 'AAA','SSS', 'AAA',],
+    suggestions: ['Japan', 'Taiwan', 'Africa',],
   },
   methods: {
     handleAddition(tag) {
@@ -27,11 +28,9 @@ new Vue({
       <div class="container">
         <VueTagAutocomplete
           v-model={this.tags}
+          suggestions={this.suggestions}
           quickMode={true}
           addOnBlur={true}
-          // onAdd={this.handleAddition}
-          // onDelete={this.handleDelete}
-          fontSize="16px"
         />
       </div>
     );

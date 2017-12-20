@@ -1,10 +1,14 @@
 <script>
+// import _ from 'lodash/';
 import playOnce from '@/util/playOnce';
+import Suggestions from '@/Suggestions';
 
 const KEYS = {
   BACKSPACE: 8,
   TAB: 9,
   ENTER: 13,
+  UP: 38,
+  DOWN: 40,
 };
 
 const EVENTS = {
@@ -12,10 +16,14 @@ const EVENTS = {
   INPUT: 'input',
   ADD: 'add',
   DELETE: 'delete',
+  FOCUS: 'focus',
 };
 
 export default {
   name: "VueTagAutocomplete",
+  componets: {
+    Suggestions,
+  },
   props: {
     value: {
       type: [Array, String,],
@@ -58,7 +66,7 @@ export default {
       required: false,
       default: false,
     },
-    allowNew: {
+    onlyFromSuggestions: {
       type: Boolean,
       required: false,
       default: false,
@@ -84,6 +92,11 @@ export default {
       required: false,
       default: '16px',
     },
+    borderColor: {
+      type: String,
+      required: false,
+      default: '#e1e1e1',
+    },
     errorAninmatedClass: {
       type: String,
       required: false,
@@ -94,11 +107,33 @@ export default {
     return {
       query: '',
       isComposing: false,
+      selectedIndex: 1,
     };
   },
   computed: {
     tags() {
-      return this.value.map((item, index) => {
+      return this.normalizeData(this.value);
+    },
+    flatTags() {
+      return this.tags.map(tag => tag.text);
+    },
+    autocompleteItems() {
+      return this.normalizeData(this.suggestions);
+    },
+    showDropdown() {
+      return this.suggestions.length > 0 && this.query.length > 0;
+    },
+    cssVaribles() {
+      return {
+        '--gap': this.gap,
+        '--font-size': this.fontSize,
+        '--border-color': this.borderColor,
+      };
+    },
+  },
+  methods: {
+    normalizeData(value) {
+      return value.map((item, index) => {
         if (typeof item === 'string') {
           return {
             id: `${index}${item}`,
@@ -109,11 +144,6 @@ export default {
         }
       });
     },
-    flatTags() {
-      return this.tags.map(tag => tag.text);
-    },
-  },
-  methods: {
     handleInput(e) {
       if (this.delimiterChars.indexOf(e.data) === -1) {
         this.query = e.target.value;
@@ -123,7 +153,7 @@ export default {
         this.$nextTick(() => {
           this.$refs.input.value = this.$refs.input.value.replace(regex, '');
         });
-        this.addTag(this.query);
+        this.addTag(this.query.trim());
       }
     },
     handleClick() {
@@ -142,25 +172,42 @@ export default {
         this.deleteTag(this.value.length - 1);
       }
 
-      if (e.keyCode === KEYS.TAB) {
+      if (e.keyCode === KEYS.TAB || e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
         e.preventDefault();
       }
     },
     handleKeyup(e) {
+      // Handle selecting in autocomplete
+      if (this.showDropdown) {
+        if (e.keyCode === KEYS.UP) {
+          this.selectedIndex -= 1;
+        } else if (e.keyCode === KEYS.DOWN) {
+          this.selectedIndex += 1;
+        }
+      }
+
+      // Handle delimiters entering
       if (this.delimiters.indexOf(e.keyCode) !== -1 ) {
-        this.addTag(this.query);
+        const tag = this.selectedIndex !== -1 ? this.autocompleteItems[this.selectedIndex] : this.query.trim();
+        this.addTag(tag);
       }
     },
-    addTag(text) {
-      const tag = text.trim();
+    handleSelectFromSuggestions(item) {
+      this.addTag(item);
+    },
+    addTag(input) {
+      const tag = typeof input === 'string' ? input : input.text;
       if (tag === '' || this.isComposing) return;
 
-      const duplicatedIdx = this.flatTags.indexOf(text);
+      // Handle meeting duplicated tag
+      const duplicatedIdx = this.flatTags.indexOf(tag);
       if (!this.allowNew && duplicatedIdx !== -1 ) {
         return playOnce(this.$el.querySelector(`[name=tag-${duplicatedIdx}]`), this.errorAninmatedClass);
       }
 
+      // Add tag
       this.query = '';
+      this.selectedIndex = -1;
       if (this.quickMode) {
         this.$emit(EVENTS.INPUT, [...this.value, tag,]);
       } else {
@@ -181,7 +228,7 @@ export default {
   render() {
     return (
       <div class='TagsInput'
-        style={{'--font-size': this.fontSize, '--gap': this.gap,}}
+        style={this.cssVaribles}
         onClick={this.handleClick}
       >
         {this.tags.map((item, index) =>
@@ -194,15 +241,24 @@ export default {
             </div>
           )
         )}
-        <input class='input' type='text'
-          ref='input'
-          value={this.query}
-          placeholder={this.placeholder}
-          onInput={this.handleInput}
-          onKeyup={this.handleKeyup}
-          onKeydown={this.handleKeydown}
-          onBlur={this.handleBlur}
-        />
+        <div class="search" style={{'min-width': `${this.placeholder.length}em`,}}>
+          <input class='input' type='text'
+            ref='input'
+            value={this.query}
+            placeholder={this.placeholder}
+            onInput={this.handleInput}
+            onKeyup={this.handleKeyup}
+            onKeydown={this.handleKeydown}
+            onBlur={this.handleBlur}
+          />
+          {this.showDropdown ?
+            <Suggestions
+              items={this.autocompleteItems}
+              selectedIndex={this.selectedIndex}
+              onSelect={this.handleSelectFromSuggestions}
+            />
+            : null}
+        </div>
       </div>
     );
   },
@@ -233,22 +289,29 @@ $color: #909399
   margin-right: var(--gap)
   margin-top: var(--gap)
 
-.input
-  @extend %gap
+.search
+  position: relative
   flex: 1
   max-width: 100%
   padding: var(--gap) 0
-  border: 0
-  outline: none
   font-size: var(--font-size)
+  @extend %gap
+
+.input
+  width: 100%
+  border: 0
+  padding: 0
+  margin: 0
+  outline: none
+  font-size: inherit
 
 .tag
-  @extend %gap
   display: inline-flex
   align-items: center
   white-space: nowrap
   font-size: var(--font-size)
   padding: 0.25em 0.75em
+  @extend %gap
 
   border-radius: 3px
   border: 1px solid rgba($color, 0.5)
