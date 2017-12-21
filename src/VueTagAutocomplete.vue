@@ -13,7 +13,7 @@ const KEYS = {
 
 const EVENTS = {
   INPUTCHANGE: 'inputChange',
-  INPUT: 'input',
+  CHANGE: 'change',
   ADD: 'add',
   DELETE: 'delete',
   FOCUS: 'focus',
@@ -24,8 +24,12 @@ export default {
   componets: {
     Suggestions,
   },
+  model: {
+    prop: 'tags',
+    event: 'change',
+  },
   props: {
-    value: {
+    tags: {
       type: [Array, String,],
       required: true,
       validator(array) {
@@ -111,8 +115,8 @@ export default {
     };
   },
   computed: {
-    tags() {
-      return this.normalizeData(this.value);
+    normalizedTags() {
+      return this.normalizeData(this.tags);
     },
     flatTags() {
       return this.tags.map(tag => tag.text);
@@ -209,14 +213,14 @@ export default {
       this.query = '';
       this.selectedIndex = -1;
       if (this.quickMode) {
-        this.$emit(EVENTS.INPUT, [...this.value, tag,]);
+        this.$emit(EVENTS.CHANGE, [...this.value, tag,]);
       } else {
         this.$emit(EVENTS.ADD, tag);
       }
     },
     deleteTag(index) {
       if (this.quickMode) {
-        this.$emit(EVENTS.INPUT, [
+        this.$emit(EVENTS.CHANGE, [
           ...this.value.slice(0, index),
           ...this.value.slice(index + 1, this.value.length),
         ]);
@@ -231,7 +235,7 @@ export default {
         style={this.cssVaribles}
         onClick={this.handleClick}
       >
-        {this.tags.map((item, index) =>
+        {this.normalizedTags.map((item, index) =>
           (
             <div class='tag' name={`tag-${index}`} key={item.id}>
               <span class='text'>{item.text}</span>

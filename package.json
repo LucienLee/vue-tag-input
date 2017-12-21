@@ -28,15 +28,13 @@
     "jest": "^21.2.1",
     "jest-serializer-vue": "^0.3.0",
     "node-sass": "^4.7.2",
-    "poi": "^9.6.1",
+    "poi": "^9.6.2",
     "poi-preset-eslint": "^9.0.1",
     "poi-preset-transform-test-files": "^9.0.3",
     "sass-loader": "^6.0.6",
     "vue-test-utils": "^1.0.0-beta.7"
   },
-  "peerDependencies": {
-    "vue": "^2.5.9"
-  },
+  "peerDependencies": {},
   "dependencies": {},
   "jest": {
     "snapshotSerializers": [

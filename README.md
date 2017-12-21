@@ -12,7 +12,7 @@ yarn add vue-tag-autocomplete
 
 ```html
 <template>
-  <VueTagAutocomplete v-model="tags" :quickMode="true"></VueTagAutocomplete>
+  <VueTagAutocomplete v-model="tags" :quick-mode="true"></VueTagAutocomplete>
 </template>
 
 <script>
@@ -42,7 +42,7 @@ export default {
 
 ## Props
 
-#### value - {Array<Object|String>} (required) 
+#### tags - {Array<Object|String>} (required) 
 An array of tag objects. Each tag need an `id` and a `text` property which is used to display. Otherwise, you could just use array of strings directly. This component would generate id by index and string automatically. 
 
 ```js
@@ -82,18 +82,18 @@ An array of suggestions that are used as basis for showing autocomplete. Each ta
 ```
 #### quickMode - {Boolean}
 Default: `false`  
-Allow developers to use `v-model`, rather than handling `add` and `delete` event by yourselves. In quick mode, new tag will append to array as `string`. If you want to control how new tag be added, you could listen [`input`](#input) event. Otherwise, you should listen [`add`](#add) and [`delete`](#delete) event instead. 
+Allow developers to use `v-model`, rather than handling `add` and `delete` event by yourselves. In quick mode, new tag will append to array as `string`. If you want to control how new tag be added, you could listen [`change`](#change) event. Otherwise, you should listen [`add`](#add) and [`delete`](#delete) event instead. 
 
 ```html
 <VueTagAutocomplete
-  :quickMode="true"
+  :quick-mode="true"
   v-model="tags"
 />
 <!-- Which is equal to -->
 <VueTagAutocomplete
-  :quickMode="true"
-  :value="tags"
-  @input="val = { tags = val }"
+  :quick-mode="true"
+  :tags="tags"
+  @change="val = { tags = val }"
 />
 ```
 
@@ -133,7 +133,7 @@ Emitted when a tag had be added.
 
 ```html
 <template>
-  <VueTagAutocomplete :value="tags" @add="onAdd"></VueTagAutocomplete>
+  <VueTagAutocomplete :tags="tags" @add="onAdd"></VueTagAutocomplete>
 </template>
 
 <script>
@@ -156,7 +156,7 @@ Emitted when a tag had be added.
 
 ```html
 <template>
-  <VueTagAutocomplete :value="tags" @delete="onDelete"></VueTagAutocomplete>
+  <VueTagAutocomplete :tags="tags" @delete="onDelete"></VueTagAutocomplete>
 </template>
 
 <script>
@@ -173,7 +173,7 @@ export default {
 </script>  
 ```
 
-#### input
+#### change
 Params: the array of updated tags - {Array}  
 Emitted when a tag had be added or deteled, which only be available in [`quickMode`](#quickMode---Boolean). The new tag will be appended as string into array. If you need to control new tag in the array, you could modify the last item of array and pass the whole array to `data` in the listener.
 
