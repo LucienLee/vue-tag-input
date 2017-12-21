@@ -1,8 +1,8 @@
 {
-  "name": "vue-tag-autocomplete",
+  "name": "vue-tag-input",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/vue-tag-autocomplete.js",
+  "main": "dist/vue-tag-input.js",
   "files": [
     "dist/umd"
   ],
@@ -16,7 +16,7 @@
     "clean": "rm -rf dist"
   },
   "author": "Lucien Lee <lucien@lucienlee.cc>",
-  "repository": "git@github.com:LucienLee/vue-tag-autocomplete.git",
+  "repository": "git@github.com:LucienLee/vue-tag-input.git",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^8.0.3",

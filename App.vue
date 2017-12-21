@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <vue-tag-autocomplete
+    <vue-tag-input
       v-model="tags"
       :quick-mode="true"
     />
@@ -8,11 +8,11 @@
 </template>
 
 <script>
-import VueTagAutocomplete from '@/VueTagAutocomplete';
+import VueTagInput from '@/VueTagInput';
 
 export default {
   components: {
-    VueTagAutocomplete,
+    VueTagInput,
   },
   data() {
     return {

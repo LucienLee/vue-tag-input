@@ -1,22 +1,36 @@
-# Vue Tag Autocomplete
-Customizable [Vue](https://vuejs.org) component for inputing tags, which support autocomplete.
+# Vue Tag Input
+Customizable [Vue](https://vuejs.org) component for tag input, which support autocomplete.
 
 ## Getting Started
 
+### Install
+
+Recommand intall from CLI:
+
 ```bash
-npm install --save vue-tag-autocomplete // OR
-yarn add vue-tag-autocomplete
+npm install --save vue-tag-input // OR
+yarn add vue-tag-input
+```
+
+If you want to include script directly:
+
+```html
+<!-- Load Script --> 
+<script src="https://cdn.jsdelivr.net/npm/vue-tag-input/dist/umd/vue-tag-input.js"></script>
+
+<!-- Load Style --> 
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/vue-tag-input/dist/umd/vue-tag-input.css">
 ```
 
 ### Quick Example
 
 ```html
 <template>
-  <VueTagAutocomplete v-model="tags" :quick-mode="true"></VueTagAutocomplete>
+  <vue-tag-input v-model="tags" :quick-mode="true"></vue-tag-input>
 </template>
 
 <script>
-import VueTagAutocomplete from 'vue-tag-autocomplete'
+import VueTagInput from 'vue-tag-input'
 
 export default {
   data() {
@@ -28,7 +42,7 @@ export default {
     }
   },
   components: {
-    VueTagAutocomplete
+    VueTagInput
   }
 }
 </script>
@@ -133,7 +147,7 @@ Emitted when a tag had be added.
 
 ```html
 <template>
-  <VueTagAutocomplete :tags="tags" @add="onAdd"></VueTagAutocomplete>
+  <vue-tag-input :tags="tags" @add="onAdd"></vue-tag-input>
 </template>
 
 <script>
@@ -156,7 +170,7 @@ Emitted when a tag had be added.
 
 ```html
 <template>
-  <VueTagAutocomplete :tags="tags" @delete="onDelete"></VueTagAutocomplete>
+  <vue-tag-input :tags="tags" @delete="onDelete"></vue-tag-input>
 </template>
 
 <script>
@@ -223,3 +237,5 @@ export default {
 ## Author
 Lucien Lee
 
+## License
+MIT

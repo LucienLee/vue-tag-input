@@ -20,7 +20,7 @@ const EVENTS = {
 };
 
 export default {
-  name: "VueTagAutocomplete",
+  name: "VueTagInput",
   componets: {
     Suggestions,
   },

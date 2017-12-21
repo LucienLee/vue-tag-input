@@ -1,4 +1,4 @@
-const componentName = 'VueTagAutocomplete';
+const componentName = 'VueTagInput';
 
 const camelToKebab = str => str
   .replace(/(^[A-Z])/, ([first]) => first.toLowerCase())
