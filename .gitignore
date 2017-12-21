@@ -4,5 +4,5 @@ node_modules/
 npm-debug.log
 coverage
 dist/umd
-output_test/
+**/__test__/*.transformed.js
 

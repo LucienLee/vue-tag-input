@@ -9,8 +9,8 @@
   "scripts": {
     "start": "poi",
     "build": "poi build --format umd && poi build --component",
-    "test": "poi test && jest output_test/test.js",
-    "test:update": "poi test && jest output_test/test.js -u",
+    "test": "poi test && jest",
+    "test:update": "poi test && jest -u",
     "lint": "eslint --fix . --ext .vue --ext .js",
     "lint:check": "eslint . --ext .vue --ext .js",
     "clean": "rm -rf dist"
@@ -30,13 +30,14 @@
     "node-sass": "^4.7.2",
     "poi": "^9.6.2",
     "poi-preset-eslint": "^9.0.1",
-    "poi-preset-transform-test-files": "^9.0.3",
+    "poi-preset-transform-test-files": "^10.0.0",
     "sass-loader": "^6.0.6",
     "vue-test-utils": "^1.0.0-beta.7"
   },
   "peerDependencies": {},
   "dependencies": {},
   "jest": {
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.transformed.jsx?$",
     "snapshotSerializers": [
       "<rootDir>/node_modules/jest-serializer-vue"
     ]
