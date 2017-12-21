@@ -38,6 +38,7 @@
   "dependencies": {},
   "jest": {
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.transformed.jsx?$",
+    "mapCoverage": true,
     "snapshotSerializers": [
       "<rootDir>/node_modules/jest-serializer-vue"
     ]
