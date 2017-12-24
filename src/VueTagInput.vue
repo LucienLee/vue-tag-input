@@ -1,5 +1,5 @@
 <script>
-// import _ from 'lodash/';
+import stringWidth from 'string-width';
 import playOnce from '@/util/playOnce';
 import Suggestions from '@/Suggestions';
 
@@ -30,7 +30,7 @@ export default {
   },
   props: {
     tags: {
-      type: [Array, String,],
+      type: [Array, String],
       required: true,
       validator(array) {
         return array.reduce((acc, item) =>
@@ -38,7 +38,7 @@ export default {
       },
     },
     suggestions: {
-      type: [Array, String,],
+      type: [Array, String],
       required: false,
       default(){ return []; },
       validator(array) {
@@ -55,14 +55,14 @@ export default {
       type: Array,
       required: false,
       default() {
-        return [KEYS.ENTER, KEYS.TAB,];
+        return [KEYS.ENTER, KEYS.TAB];
       },
     },
     delimiterChars: {
       type: Array,
       required: false,
       default() {
-        return [',', '、',];
+        return [',', '、'];
       },
     },
     quickMode: {
@@ -213,7 +213,7 @@ export default {
       this.query = '';
       this.selectedIndex = -1;
       if (this.quickMode) {
-        this.$emit(EVENTS.CHANGE, [...this.value, tag,]);
+        this.$emit(EVENTS.CHANGE, [...this.value, tag]);
       } else {
         this.$emit(EVENTS.ADD, tag);
       }
@@ -231,7 +231,7 @@ export default {
   },
   render() {
     return (
-      <div class='TagsInput'
+      <div class='TagInput'
         style={this.cssVaribles}
         onClick={this.handleClick}
       >
@@ -245,7 +245,7 @@ export default {
             </div>
           )
         )}
-        <div class="search" style={{'min-width': `${this.placeholder.length}em`,}}>
+        <div class="search" style={{'min-width': `${stringWidth(this.placeholder)}em`}}>
           <input class='input' type='text'
             ref='input'
             value={this.query}
@@ -272,7 +272,7 @@ export default {
 <style lang="sass" scoped>
 $color: #909399
 
-.TagsInput
+.TagInput
   position: relative
   display: flex
   align-items: center
