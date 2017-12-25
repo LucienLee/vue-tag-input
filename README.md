@@ -29,7 +29,7 @@ If you want to include script directly:
 
 ```html
 <template>
-  <vue-tag-input v-model="tags" :quick-mode="true"></vue-tag-input>
+  <VueTagInput v-model="tags" :quick-mode="true"></VueTagInput>
 </template>
 
 <script>
@@ -102,12 +102,12 @@ Default: `false`
 Allow developers to use `v-model`, rather than handling `add` and `delete` event by yourselves. In quick mode, new tag will append to array as `string`. If you want to control how new tag be added, you could listen [`change`](#change) event. Otherwise, you should listen [`add`](#add) and [`delete`](#delete) event instead. 
 
 ```html
-<VueTagAutocomplete
+<vue-tag-input
   :quick-mode="true"
   v-model="tags"
 />
 <!-- Which is equal to -->
-<VueTagAutocomplete
+<vue-tag-input
   :quick-mode="true"
   :tags="tags"
   @change="val = { tags = val }"
@@ -140,7 +140,7 @@ Add tag automatically when input field blur.
 
 #### errorAninmatedClass - {String}
 Default: `error` (scoped css)
-The animation class would add on duplicated tag element when `allowNew` is `false`. The default animation is shaking for 0.25s.
+The animation class would add on duplicated tag element when [`allowDuplicated`](#allowDuplicated---{Boolean}) is `false`. The default animation is shaking for 0.25s.
 
 ## Events
 
@@ -150,7 +150,7 @@ Emitted when a tag had be added.
 
 ```html
 <template>
-  <vue-tag-input :tags="tags" @add="onAdd"></vue-tag-input>
+  <VueTagInput :tags="tags" @add="onAdd"></VueTagInput>
 </template>
 
 <script>
@@ -173,7 +173,7 @@ Emitted when a tag had be added.
 
 ```html
 <template>
-  <vue-tag-input :tags="tags" @delete="onDelete"></vue-tag-input>
+  <VueTagInput :tags="tags" @delete="onDelete"></VueTagInput>
 </template>
 
 <script>
@@ -236,6 +236,27 @@ export default {
 ```
 
 ## Development
+
+```bash
+# Run development enviroment
+npm start 
+
+# Bundle test file and test it with Jest
+npm run test
+
+# Bundle test file and update test snapshot 
+npm run test:update
+
+# fix eslint
+npm run lint
+
+# Examine code style with eslint
+npm run lint:check 
+
+# Bundle component module 
+npm run build
+
+```
 
 ## Author
 Lucien Lee

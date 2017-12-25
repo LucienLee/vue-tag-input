@@ -151,7 +151,7 @@ export default {
     handleInput(e) {
       if (this.delimiterChars.indexOf(e.data) === -1) {
         this.query = e.target.value;
-        this.$emit(EVENTS.INPUTCHANGE, e.data);
+        this.$emit(EVENTS.INPUTCHANGE, e.target.value);
       } else {
         const regex = new RegExp(this.delimiterChars.join('|'), 'gi');
         this.$nextTick(() => {
