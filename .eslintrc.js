@@ -64,7 +64,7 @@ module.exports = {
     // enforce spacing inside array brackets
     'array-bracket-spacing': ['error', 'never'],
     // trailing comma
-    'comma-dangle': [2,'always'],
+    'comma-dangle': [2,'only-multiline'],
     // semicolons
     'semi': [2, 'always'],
   },
