@@ -101,6 +101,11 @@ export default {
       required: false,
       default: 'error',
     },
+    tagComputedStyle: {
+      type: Function,
+      required: false,
+      default: function () {},
+    }
   },
   data() {
     return {
@@ -163,7 +168,7 @@ export default {
     },
     handleFocus() {
       this.focused = true;
-      this.$emit(EVENTS.BLUR);
+      this.$emit(EVENTS.FOCUS);
     },
     handleBlur() {
       if (this.addOnBlur) {
@@ -245,6 +250,7 @@ export default {
           <TagInputTag
             item={item}
             index={index}
+            style={tagComputedStyle(item)}
             onDelete={this.deleteTag.bind(this, index)}
           />
         )}

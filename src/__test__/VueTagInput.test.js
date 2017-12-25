@@ -3,6 +3,7 @@
 import { mount } from 'vue-test-utils';
 import keycode from 'keycode';
 import VueTagInput from '@/VueTagInput';
+import EVENTS from '@/utils/events';
 
 function createInstance(data = {}) {
   const defaults = {
@@ -45,12 +46,25 @@ describe('Tag Input', () => {
       expect(wrapper.find({ref: 'input'}).element.placeholder).toEqual('Please enter a tag');
     });
 
-    it('assign min width to fit placeholder', () => {
+    it('assigns min width to fit placeholder', () => {
       const placeholder = ['Please enter', '一個標籤'];
       const wrapper = createInstance({ placeholder: placeholder.join(' ') });
       expect(wrapper.find({ref: 'search'}).hasStyle('min-width',
         `${placeholder[0].length + placeholder[1].length * 2 + 1}em`)).toBe(true);
     });
+
+    it('emits focus or blur event when focus status changed', () => {
+      const wrapper = createInstance();
+      const inputWrapper = wrapper.find({ref: 'input'});
+
+      inputWrapper.trigger(EVENTS.FOCUS);
+      expect(wrapper.emitted()[EVENTS.FOCUS]).toBeTruthy();
+
+      inputWrapper.trigger(EVENTS.BLUR);
+      expect(wrapper.emitted()[EVENTS.BLUR]).toBeTruthy();
+    });
+
+
 
   });
 
@@ -70,9 +84,8 @@ describe('Tag Input', () => {
       const inputWrapper = wrapper.find({ref: 'input'});
       type(inputWrapper, query);
 
-      expect(wrapper.emitted().inputChange.length).toBe(query.length);
+      expect(wrapper.emitted()[EVENTS.INPUTCHANGE].length).toBe(query.length);
     });
-
 
   });
 
