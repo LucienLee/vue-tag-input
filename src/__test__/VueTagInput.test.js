@@ -48,7 +48,7 @@ describe('Tag Input', () => {
     it('assign min width to fit placeholder', () => {
       const placeholder = ['Please enter', '一個標籤'];
       const wrapper = createInstance({ placeholder: placeholder.join(' ') });
-      expect(wrapper.find('.search').hasStyle('min-width',
+      expect(wrapper.find({ref: 'search'}).hasStyle('min-width',
         `${placeholder[0].length + placeholder[1].length * 2 + 1}em`)).toBe(true);
     });
 

@@ -1,7 +1,9 @@
 <script>
 import stringWidth from 'string-width';
-import playOnce from '@/util/playOnce';
-import Suggestions from '@/Suggestions';
+import TagInputSuggestions from '@/Suggestions';
+import TagInputTag from '@/Tag';
+import playOnce from '@/utils/playOnce';
+import EVENTS from '@/utils/events';
 
 const KEYS = {
   BACKSPACE: 8,
@@ -11,18 +13,11 @@ const KEYS = {
   DOWN: 40,
 };
 
-const EVENTS = {
-  INPUTCHANGE: 'inputChange',
-  CHANGE: 'change',
-  ADD: 'add',
-  DELETE: 'delete',
-  FOCUS: 'focus',
-};
-
 export default {
   name: "VueTagInput",
   componets: {
-    Suggestions,
+    TagInputSuggestions,
+    TagInputTag,
   },
   model: {
     prop: 'tags',
@@ -111,6 +106,7 @@ export default {
     return {
       query: '',
       isComposing: false,
+      focused: false,
       selectedIndex: 1,
     };
   },
@@ -119,9 +115,9 @@ export default {
       return this.normalizeData(this.tags);
     },
     flatTags() {
-      return this.tags.map(tag => tag.text);
+      return this.normalizedTags.map(tag => tag.text);
     },
-    autocompleteItems() {
+    normalizedSuggestions() {
       return this.normalizeData(this.suggestions);
     },
     showDropdown() {
@@ -160,20 +156,28 @@ export default {
         this.addTag(this.query.trim());
       }
     },
-    handleClick() {
-      this.$refs.input.focus();
+    handleClick(e) {
+      if (document.activeElement !== e.target) {
+        this.$refs.input.focus();
+      }
+    },
+    handleFocus() {
+      this.focused = true;
+      this.$emit(EVENTS.BLUR);
     },
     handleBlur() {
       if (this.addOnBlur) {
         this.isComposing = false;
         this.addTag(this.query);
       }
+      this.focused = false;
+      this.$emit(EVENTS.BLUR);
     },
     handleKeydown(e) {
       this.isComposing = e.isComposing;
 
       if (e.keyCode === KEYS.BACKSPACE && this.$refs.input.selectionStart === 0) {
-        this.deleteTag(this.value.length - 1);
+        this.deleteTag(this.tags.length - 1);
       }
 
       if (e.keyCode === KEYS.TAB || e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
@@ -181,18 +185,19 @@ export default {
       }
     },
     handleKeyup(e) {
+      let { showDropdown, selectedIndex, normalizedSuggestions } = this;
       // Handle selecting in autocomplete
-      if (this.showDropdown) {
+      if (showDropdown) {
         if (e.keyCode === KEYS.UP) {
-          this.selectedIndex -= 1;
+          selectedIndex -= 1;
         } else if (e.keyCode === KEYS.DOWN) {
-          this.selectedIndex += 1;
+          selectedIndex += 1;
         }
       }
 
       // Handle delimiters entering
       if (this.delimiters.indexOf(e.keyCode) !== -1 ) {
-        const tag = this.selectedIndex !== -1 ? this.autocompleteItems[this.selectedIndex] : this.query.trim();
+        const tag = selectedIndex !== -1 ? normalizedSuggestions[selectedIndex] : this.query.trim();
         this.addTag(tag);
       }
     },
@@ -205,7 +210,7 @@ export default {
 
       // Handle meeting duplicated tag
       const duplicatedIdx = this.flatTags.indexOf(tag);
-      if (!this.allowNew && duplicatedIdx !== -1 ) {
+      if (!this.allowDuplicated && duplicatedIdx !== -1 ) {
         return playOnce(this.$el.querySelector(`[name=tag-${duplicatedIdx}]`), this.errorAninmatedClass);
       }
 
@@ -213,7 +218,7 @@ export default {
       this.query = '';
       this.selectedIndex = -1;
       if (this.quickMode) {
-        this.$emit(EVENTS.CHANGE, [...this.value, tag]);
+        this.$emit(EVENTS.CHANGE, [...this.tags, tag]);
       } else {
         this.$emit(EVENTS.ADD, tag);
       }
@@ -221,8 +226,8 @@ export default {
     deleteTag(index) {
       if (this.quickMode) {
         this.$emit(EVENTS.CHANGE, [
-          ...this.value.slice(0, index),
-          ...this.value.slice(index + 1, this.value.length),
+          ...this.tags.slice(0, index),
+          ...this.tags.slice(index + 1, this.tags.length),
         ]);
       } else {
         this.$emit(EVENTS.DELETE, index);
@@ -231,33 +236,38 @@ export default {
   },
   render() {
     return (
-      <div class='TagInput'
+      <div
+        class={['TagInput', {'is-focused': this.focused}]}
         style={this.cssVaribles}
         onClick={this.handleClick}
       >
         {this.normalizedTags.map((item, index) =>
-          (
-            <div class='tag' name={`tag-${index}`} key={item.id}>
-              <span class='text'>{item.text}</span>
-              <span class='delete'
-                onClick={this.deleteTag.bind(this, index)}
-              ></span>
-            </div>
-          )
+          <TagInputTag
+            item={item}
+            index={index}
+            onDelete={this.deleteTag.bind(this, index)}
+          />
         )}
-        <div class="search" style={{'min-width': `${stringWidth(this.placeholder)}em`}}>
-          <input class='input' type='text'
+        <div
+          class="TagInput-search"
+          ref="search"
+          style={{'min-width': `${stringWidth(this.placeholder)}em`}}
+        >
+          <input
+            class='TagInput-input'
+            type='text'
             ref='input'
             value={this.query}
             placeholder={this.placeholder}
             onInput={this.handleInput}
             onKeyup={this.handleKeyup}
             onKeydown={this.handleKeydown}
+            onFocus={this.handleFocus}
             onBlur={this.handleBlur}
           />
           {this.showDropdown ?
-            <Suggestions
-              items={this.autocompleteItems}
+            <TagInputSuggestions
+              items={this.normalizedSuggestions}
               selectedIndex={this.selectedIndex}
               onSelect={this.handleSelectFromSuggestions}
             />
@@ -269,7 +279,8 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
+@import './sass/utils'
 $color: #909399
 
 .TagInput
@@ -289,11 +300,7 @@ $color: #909399
   border-radius: 4px
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075)
 
-%gap
-  margin-right: var(--gap)
-  margin-top: var(--gap)
-
-.search
+.TagInput-search
   position: relative
   flex: 1
   max-width: 100%
@@ -301,60 +308,13 @@ $color: #909399
   font-size: var(--font-size)
   @extend %gap
 
-.input
+.TagInput-input
   width: 100%
   border: 0
   padding: 0
   margin: 0
   outline: none
   font-size: inherit
-
-.tag
-  display: inline-flex
-  align-items: center
-  white-space: nowrap
-  font-size: var(--font-size)
-  padding: 0.25em 0.75em
-  @extend %gap
-
-  border-radius: 3px
-  border: 1px solid rgba($color, 0.5)
-  background: whitesmoke
-  color: $color
-
-.delete
-  position: relative
-  width: 1.25em
-  height: 1.25em
-  cursor: pointer
-  border-radius: 50%
-  margin-right: -0.25em
-  margin-left: 0.25em
-
-  &:hover
-    background-color: $color
-
-    &::before,
-    &::after
-      background-color: #fff
-
-  &::before,
-  &::after
-    content: ""
-    position: absolute
-    display: block
-    top: 50%
-    left: 50%
-    height: 50%
-    width: 2px
-    transform-origin: center center
-    background-color: currentColor
-
-  &::before
-    transform: translateX(-50%) translateY(-50%) rotate(-45deg)
-
-  &::after
-    transform: translateX(-50%) translateY(-50%) rotate(45deg)
 
 @keyframes shake
   from, to

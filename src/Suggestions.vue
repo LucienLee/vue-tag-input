@@ -20,17 +20,15 @@ export default {
   },
   render() {
     return (
-      <ul class='dropdown'>
+      <ul class='TagInput-suggestions'>
         {this.items.map((item, index) =>
-          (
-            <li
-              class={{'menu-item': true, 'menu-item--selected': this.selectedIndex === index}}
-              key={item.id}
-              onMousedown={this.handleMousedown.bind(this, item)}
-            >
-              {item.text}
-            </li>
-          )
+          <li
+            class={['TagInput-suggestionItem', {'is-active': this.selectedIndex === index}]}
+            key={item.id}
+            onMousedown={this.handleMousedown.bind(this, item)}
+          >
+            {item.text}
+          </li>
         )}
       </ul>
     );
@@ -38,8 +36,8 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
-.dropdown
+<style lang="sass">
+.TagInput-suggestions
   position: absolute
   top: 100%
   left: 0
@@ -57,20 +55,20 @@ export default {
   border: 1px solid var(--border-color)
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12)
 
-.menu-item
+.TagInput-suggestionItem
   overflow: hidden
   white-space: nowrap
   text-overflow: ellipsis
   padding: 0.4em 0.8em
   cursor: pointer
 
-  & + .menu-item
+  & + .TagInput-suggestionItem
     border-top: 1px solid var(--border-color)
 
   &:hover
     background-color: rgba(0, 0, 0, 0.06)
 
-.menu-item--selected
+.TagInput-suggestionItem.is-active
   background-color: rgba(#54bf8e, 0.2)
   color: #54bf8e
 

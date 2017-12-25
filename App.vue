@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <vue-tag-input
+    <VueTagInput
       v-model="tags"
+      :suggestions="suggestions"
       :quick-mode="true"
     />
   </div>
@@ -18,7 +19,6 @@ export default {
     return {
       tags: ['SSS', 'AAA','SSS', 'AqweqweqweqAA','SSS', 'AAA','SSS', 'AAA'],
       suggestions: ['Japan', 'Taiwan', 'Africa'],
-      msg: '123123',
     };
   },
 };
