@@ -24,7 +24,7 @@ export default {
         {this.items.map((item, index) =>
           (
             <li
-              class={{'menu-item': true, 'menu-item--selected': this.selectedIndex === index,}}
+              class={{'menu-item': true, 'menu-item--selected': this.selectedIndex === index}}
               key={item.id}
               onMousedown={this.handleMousedown.bind(this, item)}
             >

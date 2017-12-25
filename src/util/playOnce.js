@@ -10,6 +10,6 @@ export default function (animatedElement, animatedClass) {
   animationEndEvent.forEach((event) => {
     animatedElement.addEventListener(event, function () {
       animatedElement.classList.remove(animatedClass);
-    }, {once: true,});
+    }, {once: true});
   });
 }

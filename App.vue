@@ -16,8 +16,8 @@ export default {
   },
   data() {
     return {
-      tags: ['SSS', 'AAA','SSS', 'AqweqweqweqAA','SSS', 'AAA','SSS', 'AAA',],
-      suggestions: ['Japan', 'Taiwan', 'Africa',],
+      tags: ['SSS', 'AAA','SSS', 'AqweqweqweqAA','SSS', 'AAA','SSS', 'AAA'],
+      suggestions: ['Japan', 'Taiwan', 'Africa'],
       msg: '123123',
     };
   },
