@@ -28,7 +28,7 @@ export default {
             onMousedown={this.handleMousedown.bind(this, item)}
           >
             {item.text}
-          </li>
+          </li>,
         )}
       </ul>
     );

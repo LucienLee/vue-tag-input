@@ -5,19 +5,24 @@ export default {
   props: {
     item: {
       type: Object,
-      required: true
+      required: true,
+      validator(value) {
+        return value.id && value.text;
+      },
     },
-    index: {
-      type: Number,
-      required: true
-    }
+    tagStyle: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   render(h, { props, listeners }) {
-    const { item, index } = props;
+    const { item, tagStyle } = props;
     return (
       <div
         class='TagInput-tag'
-        name={`tag-${index}`}
+        style={tagStyle}
+        name={`tag-${item.id}`}
         key={item.id}
       >
         <span class='TagInput-tagText'>{item.text}</span>
@@ -27,7 +32,7 @@ export default {
         />
       </div>
     );
-  }
+  },
 };
 </script>
 

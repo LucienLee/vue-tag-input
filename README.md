@@ -139,8 +139,51 @@ Default: `false`
 Add tag automatically when input field blur.
 
 #### errorAninmatedClass - {String}
-Default: `error` (scoped css)
+Default: `error`
 The animation class would add on duplicated tag element when [`allowDuplicated`](#allowDuplicated---{Boolean}) is `false`. The default animation is shaking for 0.25s.
+
+#### tagStyle - {Object|Function}
+Default: `{}`
+The style object would be applied on the tag. Besides passing plain object, you can pass a function which return style object to assign conditional style. The function would recieve each element in `tags` as params. See the example below: 
+
+
+```html
+<!-- Conditional highlight: Add highlight property in each tag to determine the background color -->
+<template>
+  <VueTagInput
+    :tags="tags"
+    :tagStyle="tagComputedStyle"
+  />
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      tags: [{
+        id: 1,
+        text: 'javascript',
+        highlight: true
+      }, {
+        id: 2,
+        text: 'css',
+        highlight: false
+      }, {
+        id: 3,
+        text: 'html',
+        highlight: true
+      }]
+    }
+  },
+  methods: {
+    tagComputedStyle(item) {
+      // If item has highlight is true, the background would be aquamarine color. Otherwise it's grey.
+      return item.highlight ? { backgroundColor: 'Aquamarine' } : { backgroundColor: 'grey' }
+    }
+  }
+}
+</script>
+```
 
 ## Events
 

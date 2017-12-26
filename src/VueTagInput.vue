@@ -101,11 +101,11 @@ export default {
       required: false,
       default: 'error',
     },
-    tagComputedStyle: {
-      type: Function,
+    tagStyle: {
+      type: [Function, Object],
       required: false,
-      default: function () {},
-    }
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -249,10 +249,9 @@ export default {
         {this.normalizedTags.map((item, index) =>
           <TagInputTag
             item={item}
-            index={index}
-            style={tagComputedStyle(item)}
+            tagStyle={typeof this.tagStyle === 'function' ? this.tagStyle(item) : this.tagStyle}
             onDelete={this.deleteTag.bind(this, index)}
-          />
+          />,
         )}
         <div
           class="TagInput-search"

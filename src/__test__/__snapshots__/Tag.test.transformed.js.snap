@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tag has the expected html structure 1`] = `<div name="tag-1" class="TagInput-tag" style="color: rgb(255, 255, 255);"><span class="TagInput-tagText">Yo</span><span class="TagInput-tagRemoval"></span></div>`;

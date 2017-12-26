@@ -5,6 +5,16 @@ import keycode from 'keycode';
 import VueTagInput from '@/VueTagInput';
 import EVENTS from '@/utils/events';
 
+const standardData = [
+  {id: 1, text: 'Javascript', highlight: true},
+  {id: 2, text: 'Typescript', highlight: false},
+];
+
+// const plainData = [
+//   'Javascript',
+//   'Typescript',
+// ];
+
 function createInstance(data = {}) {
   const defaults = {
     tags: [],
@@ -28,7 +38,7 @@ function type(inputWrapper, value) {
 function key(inputWrapper, ...args) {
   args.forEach((value) => {
     inputWrapper.trigger('keydown', {
-      which: keycode(value)
+      which: keycode(value),
     });
   });
 }
@@ -89,6 +99,19 @@ describe('Tag Input', () => {
 
   });
 
+
+  describe('tag', () => {
+    it('has customized style when having computed style function', () => {
+      const wrapper = createInstance({
+        tags: standardData,
+        tagStyle(item) {
+          if (item.highlight) return { backgroundColor: 'red' };
+        },
+      });
+
+      expect(wrapper.find('[name^=tag]').hasStyle('background-color', 'red'));
+    });
+  });
 
 
   // it('has the expected html structure', () => {
