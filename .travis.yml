@@ -3,5 +3,5 @@ node_js: "8"
 cache: yarn
 install: npm install
 script:
-  - npm run lint:check
+  - npm run lint
   - npm run test

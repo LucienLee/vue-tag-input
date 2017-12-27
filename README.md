@@ -301,11 +301,11 @@ npm run test
 # Bundle test file and update test snapshot 
 npm run test:update
 
-# fix eslint
+# Examine code style with eslint
 npm run lint
 
-# Examine code style with eslint
-npm run lint:check 
+# Fix eslint automatically
+npm run lint:fix 
 
 # Bundle component module 
 npm run build

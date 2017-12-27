@@ -11,8 +11,8 @@
     "build": "poi build --format umd && poi build --component",
     "test": "poi test && jest",
     "test:update": "poi test && jest -u",
-    "lint": "eslint --fix . --ext .vue --ext .js",
-    "lint:check": "eslint . --ext .vue --ext .js",
+    "lint": "eslint . --ext .vue --ext .js",
+    "lint:fix": "eslint --fix . --ext .vue --ext .js",
     "clean": "rm -rf dist"
   },
   "author": "Lucien Lee <lucien@lucienlee.cc>",
