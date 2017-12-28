@@ -38,7 +38,12 @@ export default {
     placeholder: {
       type: String,
       required: false,
-      default: "Add new tags",
+      default: 'Add new tags',
+    },
+    id: {
+      type: String,
+      required: false,
+      default: '',
     },
     delimiters: {
       type: Array,
@@ -292,9 +297,11 @@ export default {
           style={{'min-width': `${stringWidth(this.placeholder)}em`}}
         >
           <input
-            class='TagInput-input'
-            type='text'
-            ref='input'
+            class="TagInput-input"
+            type="text"
+            autocomplete="off"
+            ref="input"
+            id={this.id}
             value={this.query}
             placeholder={this.placeholder}
             onInput={this.handleInput}

@@ -102,16 +102,24 @@ Default: `false`
 Allow developers to use `v-model`, rather than handling `add` and `delete` event by yourselves. In quick mode, new tag will append to array as `string`. If you want to control how new tag be added, you could listen [`change`](#change) event. Otherwise, you should listen [`add`](#add) and [`delete`](#delete) event instead. 
 
 ```html
-<vue-tag-input
+<VueTagInput
   :quick-mode="true"
   v-model="tags"
 />
 <!-- Which is equal to -->
-<vue-tag-input
+<VueTagInput
   :quick-mode="true"
   :tags="tags"
   @change="val = { tags = val }"
 />
+```
+#### id - {String}
+Defaults to `''`  
+id attribute on `<input/>`. Recommanded to assign id for identity and associate with label.
+
+```html
+<label for="email"></label>
+<VueTagInput :id="email" />
 ```
 
 #### placeholder - {String}
