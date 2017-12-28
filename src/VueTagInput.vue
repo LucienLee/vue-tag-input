@@ -3,15 +3,9 @@ import stringWidth from 'string-width';
 import TagInputSuggestions from '@/Suggestions';
 import TagInputTag from '@/Tag';
 import playOnce from '@/utils/playOnce';
-import EVENTS from '@/utils/events';
-
-const KEYS = {
-  BACKSPACE: 8,
-  TAB: 9,
-  ENTER: 13,
-  UP: 38,
-  DOWN: 40,
-};
+import stepByNumberRange from '@/utils/stepByNumberRange';
+import EVENTS from '@/constants/events';
+import KEYS from '@/constants/keys';
 
 export default {
   name: "VueTagInput",
@@ -80,6 +74,11 @@ export default {
       required: false,
       default: false,
     },
+    maxSuggestionsLength: {
+      type: Number,
+      required: false,
+      default: Infinity,
+    },
     /* Style Props */
     gap: {
       type: String,
@@ -110,12 +109,17 @@ export default {
   data() {
     return {
       query: '',
+      originalQuery: '',
       isComposing: false,
       focused: false,
-      selectedIndex: 1,
+      selectedIndex: this.initSelectedIndex,
+      isLoading: false,
     };
   },
   computed: {
+    initSelectedIndex() {
+      return this.onlyFromSuggestions ? 0 : -1;
+    },
     normalizedTags() {
       return this.normalizeData(this.tags);
     },
@@ -125,8 +129,22 @@ export default {
     normalizedSuggestions() {
       return this.normalizeData(this.suggestions);
     },
-    showDropdown() {
-      return this.suggestions.length > 0 && this.query.length > 0;
+    filteredSuggestions() {
+      const {originalQuery, maxSuggestionsLength, normalizedSuggestions, normalizedTags, allowDuplicated} = this;
+      const regex = new RegExp(`${this.escapeForRegExp(originalQuery)}`, 'i');
+      return normalizedSuggestions
+        .filter((item) => {
+          return regex.test(item.text)
+            // filter entered tags if not allow duplicated
+            && (allowDuplicated || !normalizedTags.find(tag => tag.text === item.text));
+        })
+        .slice(0, maxSuggestionsLength);
+    },
+    showSuggestions() {
+      return this.filteredSuggestions.length > 0 && this.query.length > 0 && !this.isLoading;
+    },
+    preparedToAdd() {
+      return '';
     },
     cssVaribles() {
       return {
@@ -137,6 +155,9 @@ export default {
     },
   },
   methods: {
+    escapeForRegExp(query) {
+      return query.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+    },
     normalizeData(value) {
       return value.map((item, index) => {
         if (typeof item === 'string') {
@@ -148,18 +169,6 @@ export default {
           return item;
         }
       });
-    },
-    handleInput(e) {
-      if (this.delimiterChars.indexOf(e.data) === -1) {
-        this.query = e.target.value;
-        this.$emit(EVENTS.INPUTCHANGE, e.target.value);
-      } else {
-        const regex = new RegExp(this.delimiterChars.join('|'), 'gi');
-        this.$nextTick(() => {
-          this.$refs.input.value = this.$refs.input.value.replace(regex, '');
-        });
-        this.addTag(this.query.trim());
-      }
     },
     handleClick(e) {
       if (document.activeElement !== e.target) {
@@ -178,6 +187,27 @@ export default {
       this.focused = false;
       this.$emit(EVENTS.BLUR);
     },
+    handleSelectFromSuggestions(item) {
+      this.addTag(item);
+    },
+    handleInput(e) {
+      if (this.delimiterChars.indexOf(e.data) === -1) {
+        this.query = e.target.value;
+        this.originalQuery = e.target.value;
+        this.selectedIndex = this.initSelectedIndex;
+        this.$emit(EVENTS.INPUTCHANGE, e.target.value);
+      } else {
+        const regex = new RegExp(this.delimiterChars.join('|'), 'gi');
+        this.$nextTick(() => {
+          this.$refs.input.value = this.$refs.input.value.replace(regex, '');
+        });
+
+        const tag = this.selectedIndex !== -1 ? this.filteredSuggestions[this.selectedIndex] : this.query.trim();
+        if (tag) {
+          this.addTag(tag);
+        }
+      }
+    },
     handleKeydown(e) {
       this.isComposing = e.isComposing;
 
@@ -185,29 +215,31 @@ export default {
         this.deleteTag(this.tags.length - 1);
       }
 
+      // prevent arrow key to keep cursor position in input
       if (e.keyCode === KEYS.TAB || e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
         e.preventDefault();
       }
     },
     handleKeyup(e) {
-      let { showDropdown, selectedIndex, normalizedSuggestions } = this;
+      const { showSuggestions, delimiters, filteredSuggestions, initSelectedIndex } = this;
+
       // Handle selecting in autocomplete
-      if (showDropdown) {
-        if (e.keyCode === KEYS.UP) {
-          selectedIndex -= 1;
-        } else if (e.keyCode === KEYS.DOWN) {
-          selectedIndex += 1;
+      if (showSuggestions) {
+        if (e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
+          const difference = e.keyCode === KEYS.UP ? -1 : 1;
+
+          this.selectedIndex = stepByNumberRange(this.selectedIndex, difference, initSelectedIndex, filteredSuggestions.length - 1);
+          this.query = this.selectedIndex === -1 ? this.queryOringinal: filteredSuggestions[this.selectedIndex].text;
         }
       }
 
       // Handle delimiters entering
-      if (this.delimiters.indexOf(e.keyCode) !== -1 ) {
-        const tag = selectedIndex !== -1 ? normalizedSuggestions[selectedIndex] : this.query.trim();
-        this.addTag(tag);
+      if (delimiters.indexOf(e.keyCode) !== -1 ) {
+        const tag = this.selectedIndex !== -1 ? filteredSuggestions[this.selectedIndex] : this.query.trim();
+        if (tag) {
+          this.addTag(tag);
+        }
       }
-    },
-    handleSelectFromSuggestions(item) {
-      this.addTag(item);
     },
     addTag(input) {
       const tag = typeof input === 'string' ? input : input.text;
@@ -221,7 +253,8 @@ export default {
 
       // Add tag
       this.query = '';
-      this.selectedIndex = -1;
+      this.originalQuery = '';
+      this.selectedIndex = this.initSelectedIndex;
       if (this.quickMode) {
         this.$emit(EVENTS.CHANGE, [...this.tags, tag]);
       } else {
@@ -270,9 +303,10 @@ export default {
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
           />
-          {this.showDropdown ?
+          {this.showSuggestions ?
             <TagInputSuggestions
-              items={this.normalizedSuggestions}
+              query={this.query}
+              suggestions={this.filteredSuggestions}
               selectedIndex={this.selectedIndex}
               onSelect={this.handleSelectFromSuggestions}
             />
@@ -321,6 +355,7 @@ $color: #909399
   outline: none
   font-size: inherit
 
+// TODO: Change to percentage?
 @keyframes shake
   from, to
     transform: translate3d(0, 0, 0)

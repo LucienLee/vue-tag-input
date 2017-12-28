@@ -3,7 +3,8 @@
     <VueTagInput
       v-model="tags"
       :suggestions="suggestions"
-      :tag-computed-style="computedStyle"
+      :allow-duplicated="false"
+      :only-from-suggestions="true"
       :quick-mode="true"
     />
   </div>
@@ -18,28 +19,9 @@ export default {
   },
   data() {
     return {
-      tags: [
-        {
-          id: 1,
-          text: 'Lucien',
-          highlight: true,
-        },
-        {
-          id: 2,
-          text: 'Bruce',
-          highlight: false,
-        },
-      ],
-      suggestions: ['Japan', 'Taiwan', 'Africa'],
+      tags: [],
+      suggestions: ['Japan', 'Taiwan', 'Africa', 'America', 'Canada', 'Finland', 'China'],
     };
-  },
-  methods: {
-    computedStyle(item) {
-      return item.highlight ? {
-        backgroundColor: 'blue',
-        color: '#fff',
-      }: {};
-    },
   },
 };
 </script>

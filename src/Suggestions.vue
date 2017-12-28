@@ -2,7 +2,11 @@
 export default {
   name: 'TagInputSuggestions',
   props: {
-    items: {
+    query: {
+      type: String,
+      required: true,
+    },
+    suggestions: {
       type: Array,
       required: true,
     },
@@ -12,6 +16,9 @@ export default {
     },
   },
   methods: {
+    escapeForRegExp(query) {
+      return query.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+    },
     handleMousedown(item, e) {
       // prevents input focus shifted on mouse down
       e.preventDefault();
@@ -20,11 +27,15 @@ export default {
   },
   render() {
     return (
-      <ul class='TagInput-suggestions'>
-        {this.items.map((item, index) =>
+      <ul
+        class='TagInput-suggestions'
+        role='listbox'
+      >
+        {this.suggestions.map((item, index) =>
           <li
             class={['TagInput-suggestionItem', {'is-active': this.selectedIndex === index}]}
             key={item.id}
+            role='option'
             onMousedown={this.handleMousedown.bind(this, item)}
           >
             {item.text}

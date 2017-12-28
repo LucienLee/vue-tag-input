@@ -3,7 +3,7 @@
 import { mount } from 'vue-test-utils';
 import keycode from 'keycode';
 import VueTagInput from '@/VueTagInput';
-import EVENTS from '@/utils/events';
+import EVENTS from '@/constants/events';
 
 const standardData = [
   {id: 1, text: 'Javascript', highlight: true},

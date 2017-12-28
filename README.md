@@ -138,6 +138,10 @@ Allows users to add duplicated tags. If it's `false`, the duplicated tag would p
 Default: `false`  
 Add tag automatically when input field blur.
 
+#### maxSuggestionsLength - {Number}
+Default: `Infinity`  
+Maximum number of suggestions to display.
+
 #### errorAninmatedClass - {String}
 Default: `error`
 The animation class would add on duplicated tag element when [`allowDuplicated`](#allowDuplicated---{Boolean}) is `false`. The default animation is shaking for 0.25s.
