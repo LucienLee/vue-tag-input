@@ -116,6 +116,7 @@ export default {
       query: '',
       originalQuery: '',
       isComposing: false,
+      isJustComposed: false,
       focused: false,
       selectedIndex: this.initSelectedIndex,
       isLoading: false,
@@ -127,9 +128,6 @@ export default {
     },
     normalizedTags() {
       return this.normalizeData(this.tags);
-    },
-    flatTags() {
-      return this.normalizedTags.map(tag => tag.text);
     },
     normalizedSuggestions() {
       return this.normalizeData(this.suggestions);
@@ -146,10 +144,10 @@ export default {
         .slice(0, maxSuggestionsLength);
     },
     showSuggestions() {
-      return this.filteredSuggestions.length > 0 && this.query.length > 0 && !this.isLoading;
-    },
-    preparedToAdd() {
-      return '';
+      return this.filteredSuggestions.length > 0
+        && this.query.length > 0
+        && !this.isLoading
+        && !this.isComposing;
     },
     cssVaribles() {
       return {
@@ -195,7 +193,29 @@ export default {
     handleSelectFromSuggestions(item) {
       this.addTag(item);
     },
+    // Event sequence: keydown -> compositionstart -> input -> compositionend -> keyup
+    handleKeydown(e) {
+      // delete tag if key backspace at the start of input
+      if (e.keyCode === KEYS.BACKSPACE && this.$refs.input.selectionStart === 0) {
+        this.deleteTag(this.tags.length - 1);
+      }
+
+      // prevent arrow key to keep cursor position in input
+      if (e.keyCode === KEYS.TAB || e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
+        e.preventDefault();
+      }
+    },
+    handleComposition(e) {
+      if (e.type === 'compositionend') {
+        this.isComposing = false;
+        this.isJustComposed = true;
+        this.handleInput(e);
+      } else {
+        this.isComposing = true;
+      }
+    },
     handleInput(e) {
+      if (this.isComposing) return;
       if (this.delimiterChars.indexOf(e.data) === -1) {
         this.query = e.target.value;
         this.originalQuery = e.target.value;
@@ -213,18 +233,6 @@ export default {
         }
       }
     },
-    handleKeydown(e) {
-      this.isComposing = e.isComposing;
-
-      if (e.keyCode === KEYS.BACKSPACE && this.$refs.input.selectionStart === 0) {
-        this.deleteTag(this.tags.length - 1);
-      }
-
-      // prevent arrow key to keep cursor position in input
-      if (e.keyCode === KEYS.TAB || e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
-        e.preventDefault();
-      }
-    },
     handleKeyup(e) {
       const { showSuggestions, delimiters, filteredSuggestions, initSelectedIndex } = this;
 
@@ -232,18 +240,20 @@ export default {
       if (showSuggestions) {
         if (e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
           const difference = e.keyCode === KEYS.UP ? -1 : 1;
-
-          this.selectedIndex = stepByNumberRange(this.selectedIndex, difference, initSelectedIndex, filteredSuggestions.length - 1);
-          this.query = this.selectedIndex === -1 ? this.queryOringinal: filteredSuggestions[this.selectedIndex].text;
+          this.selectedIndex = stepByNumberRange(this.selectedIndex, difference, initSelectedIndex, this.filteredSuggestions.length - 1);
+          this.query = this.selectedIndex === -1 ? this.originalQuery: filteredSuggestions[this.selectedIndex].text;
         }
       }
 
       // Handle delimiters entering
-      if (delimiters.indexOf(e.keyCode) !== -1 ) {
+      if (delimiters.indexOf(e.keyCode) !== -1 && !this.isJustComposed) {
         const tag = this.selectedIndex !== -1 ? filteredSuggestions[this.selectedIndex] : this.query.trim();
         if (tag) {
           this.addTag(tag);
         }
+      }
+      if (this.isJustComposed) {
+        this.isJustComposed = false;
       }
     },
     addTag(input) {
@@ -304,8 +314,10 @@ export default {
             id={this.id}
             value={this.query}
             placeholder={this.placeholder}
-            onInput={this.handleInput}
             onKeyup={this.handleKeyup}
+            onCompositionstart={this.handleComposition}
+            onInput={this.handleInput}
+            onCompositionend={this.handleComposition}
             onKeydown={this.handleKeydown}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
