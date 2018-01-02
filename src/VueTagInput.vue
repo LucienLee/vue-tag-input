@@ -69,7 +69,7 @@ export default {
       required: false,
       default: false,
     },
-    allowDuplicated: {
+    allowDuplicates: {
       type: Boolean,
       required: false,
       default: false,
@@ -135,13 +135,13 @@ export default {
       return this.normalizeData(this.suggestions);
     },
     filteredSuggestions() {
-      const {originalQuery, maxSuggestionsLength, normalizedSuggestions, normalizedTags, allowDuplicated} = this;
+      const {originalQuery, maxSuggestionsLength, normalizedSuggestions, normalizedTags, allowDuplicates} = this;
       const regex = new RegExp(`${this.escapeForRegExp(originalQuery)}`, 'i');
       return normalizedSuggestions
         .filter((item) => {
           return regex.test(item.text)
             // filter entered tags if not allow duplicated
-            && (allowDuplicated || !normalizedTags.find(tag => tag.text === item.text));
+            && (allowDuplicates || !normalizedTags.find(tag => tag.text === item.text));
         })
         .slice(0, maxSuggestionsLength);
     },
@@ -247,13 +247,13 @@ export default {
       }
     },
     addTag(input) {
-      const tag = typeof input === 'string' ? input : input.text;
-      if (tag === '' || this.isComposing) return;
+      const text = typeof input === 'string' ? input : input.text;
+      if (text === '') return;
 
-      // Handle meeting duplicated tag
-      const duplicatedIdx = this.flatTags.indexOf(tag);
-      if (!this.allowDuplicated && duplicatedIdx !== -1 ) {
-        return playOnce(this.$el.querySelector(`[name=tag-${duplicatedIdx}]`), this.errorAninmatedClass);
+      // Handle duplicates
+      const duplicate = this.normalizedTags.find(tag => tag.text === text);
+      if (!this.allowDuplicates && duplicate) {
+        return playOnce(this.$el.querySelector(`[name=tag-${duplicate.id}]`), this.errorAninmatedClass);
       }
 
       // Add tag
@@ -261,9 +261,9 @@ export default {
       this.originalQuery = '';
       this.selectedIndex = this.initSelectedIndex;
       if (this.quickMode) {
-        this.$emit(EVENTS.CHANGE, [...this.tags, tag]);
+        this.$emit(EVENTS.CHANGE, [...this.tags, input]);
       } else {
-        this.$emit(EVENTS.ADD, tag);
+        this.$emit(EVENTS.ADD, input);
       }
     },
     deleteTag(index) {

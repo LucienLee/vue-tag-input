@@ -138,7 +138,7 @@ Array of characters matching keyboard event key values. This is useful when need
 Default: `false`  
 If set to `true`, it will be possible to add new items only from the autocomplete dropdown.
 
-#### allowDuplicated - {Boolean}
+#### allowDuplicates - {Boolean}
 Default: `false`  
 Allows users to add duplicated tags. If it's `false`, the duplicated tag would play animation with [`errorAninmatedClass`](#errorAninmatedClass---String) to hint the user.
 

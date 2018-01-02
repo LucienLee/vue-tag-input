@@ -5,24 +5,24 @@ import keycode from 'keycode';
 import VueTagInput from '@/VueTagInput';
 import EVENTS from '@/constants/events';
 
-const standardData = [
-  {id: 1, text: 'Javascript', highlight: true},
-  {id: 2, text: 'Typescript', highlight: false},
+
+const plainTags = [
+  'Javascript',
+  'Typescript',
 ];
 
-// const plainData = [
-//   'Javascript',
-//   'Typescript',
-// ];
+const standardTags = plainTags.map((tag, index) => ({id: index, text: tag}));
+const customizedTags = standardTags.map((item, index) => item.highlight === !!index);
 
-function createInstance(data = {}) {
-  const defaults = {
+
+function createInstance(props = {}) {
+  const defaultProps = {
     tags: [],
     suggestions: [],
   };
 
   return mount(VueTagInput, {
-    propsData: Object.assign(defaults, data),
+    propsData: Object.assign(defaultProps, props),
   });
 }
 
@@ -37,9 +37,12 @@ function type(inputWrapper, value) {
 
 function key(inputWrapper, ...args) {
   args.forEach((value) => {
-    inputWrapper.trigger('keydown', {
+    const payload = {
       which: keycode(value),
-    });
+      keyCode: keycode(value),
+    };
+    inputWrapper.trigger('keydown', payload);
+    inputWrapper.trigger('keyup', payload);
   });
 }
 
@@ -79,7 +82,7 @@ describe('Tag Input', () => {
   });
 
   describe('query', () => {
-    const query = 'hello world!';
+    const query = 'Javascript';
 
     it('updates the internal state', () => {
       const wrapper = createInstance();
@@ -97,13 +100,42 @@ describe('Tag Input', () => {
       expect(wrapper.emitted()[EVENTS.INPUTCHANGE].length).toBe(query.length);
     });
 
+    it('can add duplicates', () => {
+      const wrapper = createInstance({
+        tags: standardTags,
+        allowDuplicates: true,
+      });
+      const inputWrapper = wrapper.find({ref: 'input'});
+
+      type(inputWrapper, query);
+      key(inputWrapper, 'enter');
+
+      expect(wrapper.emitted()[EVENTS.ADD][0]).toEqual([query]);
+    });
+
+    it('does not add duplicates and hints by styling the tag', () => {
+      const errorClass = 'customClass';
+      const duplicatedID = standardTags.filter(tag => tag.text === query)[0].id;
+      const wrapper = createInstance({
+        tags: standardTags,
+        allowDuplicates: false,
+        errorAninmatedClass: errorClass,
+      });
+      const inputWrapper = wrapper.find({ref: 'input'});
+
+      type(inputWrapper, query);
+      key(inputWrapper, 'enter');
+
+      expect(wrapper.emitted()[EVENTS.ADD]).toBeFalsy();
+      expect(wrapper.find(`[name=tag-${duplicatedID}]`).classes()).toContain(errorClass);
+    });
   });
 
 
   describe('tag', () => {
     it('has customized style when having computed style function', () => {
       const wrapper = createInstance({
-        tags: standardData,
+        tags: customizedTags,
         tagStyle(item) {
           if (item.highlight) return { backgroundColor: 'red' };
         },
