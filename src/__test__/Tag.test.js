@@ -3,10 +3,10 @@ import TagInputTag from '@/Tag';
 
 describe('Tag', () => {
   let tagWrapper;
-  let mockDelete;
+  const mockDelete = jest.fn();
 
   beforeEach(() => {
-    mockDelete = jest.fn();
+    mockDelete.mockReset();
     tagWrapper = mount(TagInputTag, {
       context: {
         props: {
