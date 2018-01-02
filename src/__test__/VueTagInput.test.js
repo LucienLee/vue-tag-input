@@ -184,7 +184,7 @@ describe('Tag Input', () => {
       key(inputWrapper, 'enter');
 
       expect(wrapper.emitted()[EVENTS.ADD]).toBeFalsy();
-      expect(wrapper.find(`[name=tag-${duplicatedID}]`).classes()).toContain(errorClass);
+      expect(wrapper.find(`[data-id="${duplicatedID}"]`).classes()).toContain(errorClass);
     });
   });
 
@@ -212,7 +212,7 @@ describe('Tag Input', () => {
       expect(wrapper.emitted()[EVENTS.DELETE][0]).toEqual([wrapper.vm.$props.tags.length - 1]);
     });
 
-    it('does not delete the last selected tag when backspace is pressed and query is not empty', () => {
+    it('does not delete the last selected tag when backspace is pressed and selection is not at the beginning', () => {
       const wrapper = createInstance({tags: standardTags});
       const inputWrapper = wrapper.find({ref: 'input'});
 

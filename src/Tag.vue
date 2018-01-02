@@ -22,7 +22,7 @@ export default {
       <div
         class='TagInput-tag'
         style={tagStyle}
-        name={`tag-${item.id}`}
+        data-id={item.id}
         key={item.id}
       >
         <span class='TagInput-tagText'>{item.text}</span>

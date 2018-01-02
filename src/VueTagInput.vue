@@ -162,16 +162,9 @@ export default {
       return query.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
     },
     normalizeData(value) {
-      return value.map((item, index) => {
-        if (typeof item === 'string') {
-          return {
-            id: `${index}${item}`,
-            text: item,
-          };
-        } else {
-          return item;
-        }
-      });
+      return value.map((item, index) => typeof item === 'string'
+        ? {id: `${index}${item}`, text: item}
+        : item);
     },
     handleClick(e) {
       if (document.activeElement !== e.target) {
@@ -263,7 +256,7 @@ export default {
       // Handle duplicates
       const duplicate = this.normalizedTags.find(tag => tag.text === text);
       if (!this.allowDuplicates && duplicate) {
-        return playOnce(this.$el.querySelector(`[name=tag-${duplicate.id}]`), this.errorAninmatedClass);
+        return playOnce(this.$el.querySelector(`[data-id="${duplicate.id}"]`), this.errorAninmatedClass);
       }
 
       // Add tag

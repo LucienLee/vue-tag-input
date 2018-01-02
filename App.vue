@@ -4,7 +4,7 @@
       v-model="tags"
       :suggestions="suggestions"
       :allow-duplicated="false"
-      :only-from-suggestions="true"
+      :only-from-suggestions="false"
       :quick-mode="true"
     />
   </div>
@@ -20,7 +20,8 @@ export default {
   data() {
     return {
       tags: [],
-      suggestions: ['Japan', 'Taiwan', 'Africa', 'America', 'Canada', 'Finland', 'China'],
+      // suggestions: ['Japan', 'Taiwan', 'Africa', 'America', 'Canada', 'Finland', 'China'],
+      suggestions: ['中國', '中文', '中午', '中飯'],
     };
   },
 };
