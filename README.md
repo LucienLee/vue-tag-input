@@ -65,8 +65,8 @@ An array of tag objects. Each tag need an `id` and a `text` property which is us
 ```js
 // Recommended: Pass Object 
 [
-  {id: 1, name: 'Apple'},
-  {id: 2, name: 'Banana'},
+  {id: 1, text: 'Apple'},
+  {id: 2, text: 'Banana'},
   ...
 ]
 // Quick: Pass String 
@@ -85,8 +85,8 @@ An array of suggestions that are used as basis for showing autocomplete. Each ta
 ```js
 // Recommended: Pass Object 
 [
-  {id: 1, name: 'Apple'},
-  {id: 2, name: 'Banana'},
+  {id: 1, text: 'Apple'},
+  {id: 2, text: 'Banana'},
   ...
 ]
 // Quick: Pass String 
@@ -138,7 +138,7 @@ Array of characters matching keyboard event key values. This is useful when need
 Default: `false`  
 If set to `true`, it will be possible to add new items only from the autocomplete dropdown.
 
-#### allowDuplicates - {Boolean}
+#### allowDuplicated - {Boolean}
 Default: `false`  
 Allows users to add duplicated tags. If it's `false`, the duplicated tag would play animation with [`errorAninmatedClass`](#errorAninmatedClass---String) to hint the user.
 
@@ -196,6 +196,10 @@ export default {
 }
 </script>
 ```
+
+#### preventDefaultOnEnter - {Boolean}
+Default: `false`  
+Prevent default when user tap ENTER to avoid the form submission.
 
 ## Events
 
