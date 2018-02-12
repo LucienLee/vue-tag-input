@@ -110,6 +110,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    preventDefaultOnEnter: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -195,6 +200,11 @@ export default {
 
       // prevent arrow key to keep cursor position in input
       if (e.keyCode === KEYS.TAB || e.keyCode === KEYS.UP || e.keyCode === KEYS.DOWN) {
+        e.preventDefault();
+      }
+
+      // prevent ENTER key to keep cursor position in input
+      if (e.keyCode === KEYS.ENTER && this.preventDefaultOnEnter) {
         e.preventDefault();
       }
     },

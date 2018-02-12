@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <span>Outside a Form</span>
     <VueTagInput
       v-model="tags"
       :suggestions="suggestions"
@@ -7,6 +8,21 @@
       :only-from-suggestions="false"
       :quick-mode="true"
     />
+    <br>
+    <span>Inside a Form</span>
+    <form>
+      <input
+        type="checkbox"
+        v-model="preventDefaultOnEnter">Prevent default on enter
+      <VueTagInput
+        v-model="tags"
+        :suggestions="suggestions"
+        :allow-duplicated="false"
+        :only-from-suggestions="false"
+        :quick-mode="true"
+        :prevent-default-on-enter="preventDefaultOnEnter"
+      />
+    </form>
   </div>
 </template>
 
@@ -22,6 +38,7 @@ export default {
       tags: [],
       // suggestions: ['Japan', 'Taiwan', 'Africa', 'America', 'Canada', 'Finland', 'China'],
       suggestions: ['中國', '中文', '中午', '中飯'],
+      preventDefaultOnEnter: true,
     };
   },
 };
