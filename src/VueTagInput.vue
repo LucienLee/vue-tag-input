@@ -110,6 +110,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    deleteOnBackspace: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -189,7 +194,7 @@ export default {
     // Event sequence: keydown -> compositionstart -> input -> compositionend -> keyup
     handleKeydown(e) {
       // delete tag if key backspace at the start of input
-      if (e.keyCode === KEYS.BACKSPACE && this.$refs.input.selectionStart === 0) {
+      if (this.deleteOnBackspace && e.keyCode === KEYS.BACKSPACE && this.$refs.input.selectionStart === 0) {
         this.deleteTag(this.tags.length - 1);
       }
 
